@@ -110,9 +110,10 @@ let filterNewsSite = (inputId) => {
 }
 
 let displayMoreStories = () => {
-    displayMoreBool = true;
+    displayMoreBool = !displayMoreBool;
     render(newsArray);
-    document.getElementById('seeMoreButton').hidden = true;
+    let ref = document.getElementById('seeMoreButton'); 
+    displayMoreBool=== true ? ref.innerHTML = "See Less" : ref.innerHTML = "See More";
 }
 
 callApi();
