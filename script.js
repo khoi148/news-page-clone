@@ -15,6 +15,7 @@ Example of a JSON received from this API call
     content: "The State Department asdasdasdas"
 */
 let newsArray = [];
+let newsSources = {};
 let indexOfStories = 0;
 
 let callApi = async() => {
@@ -41,6 +42,12 @@ let render = (array) => {
         let duration = Math.floor(moment.duration(now.diff(publishedAtDate)).asDays()) + ' days ago';
         //h2 length limit 35 chars
         //text content length limit 167
+
+        if(!newsSources.hasOwnProperty(item.source.name)) {
+            newsSources[item.source.name] = 1;
+        } else {
+            newsSources[item.source.name] += 1;
+        }
         return `<div id="news" class="d-flex shadow-sm my-2 rounded-lg border" style="height:250px;">
         <img style="width:300px" class="rounded-left"src="${item.urlToImage}"/>
         <div class="p-3 w-100">
@@ -55,13 +62,23 @@ let render = (array) => {
         </div>
     </div>`
     });
-    let someNews = htmlForNews.slice(indexOfStories,indexOfStories+20).join('');
-    document.getElementById('newsArea').innerHTML += someNews;
+    //method like Map() but for every property in an object
+    let array2 = [];
+    Object.keys(newsSources).forEach(key => {
+        array2.push(`<div class="d-flex align-items-center">
+                        <input type="checkbox" value="value1"/>
+                        <label style="margin:0;">(${newsSources[key]}) ${key}</label>
+                    </div>`
+        );
+    });
+    console.log(array2);
+
+    document.getElementById('newsArea').innerHTML += htmlForNews.slice(indexOfStories,indexOfStories+20).join('');
     document.getElementById('storiesNum').innerHTML =  `Number of Stories: ${newsArray.length}`;
+    document.getElementById('newsSiteFilter').innerHTML = `${array2.join('')}`;
 }
 
 let displayMoreStories = () => {
-    console.log('hi');
     render(newsArray);
     document.getElementById('seeMoreButton').hidden = true;
 }
