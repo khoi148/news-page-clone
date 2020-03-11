@@ -19,7 +19,7 @@ let indexOfStories = 0;
 
 let callApi = async() => {
     let apiKey = '1cea5279cd2d43698c1e692ee1e04475';
-    let url=`http://newsapi.org/v2/everything?pageSize=40&q=trump&apiKey=${apiKey}`; 
+    let url=`https://newsapi.org/v2/everything?pageSize=40&q=trump&apiKey=${apiKey}`; 
 
     let data = await fetch(url); 
     let result = await data.json();
