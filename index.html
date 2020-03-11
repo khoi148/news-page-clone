@@ -11,11 +11,19 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/moment"></script>
 </head>
 <body>
-    <h1>Khoi's News Desk</h1>
-    <div id="newsArea"></div>
-
+    <div class="row">
+      <div class="col-3">
+        <h1>Khoi's News Desk</h1>
+        <div id="storiesNum"></div>
+      </div>
+      <div class="col-9 d-flex flex-column">
+        <div id="newsArea" class=""></div>
+        <button onClick="displayMoreStories()" id="seeMoreButton" class="align-self-center mt-2">See More</button>
+      </div>
+    </div>
 
     <script src="script.js"></script>
     <script
