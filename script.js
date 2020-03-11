@@ -17,6 +17,7 @@ Example of a JSON received from this API call
 let newsArray = [];
 let newsSources = {};
 let indexOfStories = 0;
+let displayMoreBool = false;
 
 let callApi = async() => {
     let apiKey = '1cea5279cd2d43698c1e692ee1e04475';
@@ -29,11 +30,10 @@ let callApi = async() => {
     console.log("article list ", newsArray);
     //note: if you try to put the two lines below outside of the async callApi function, the newsArray will be empty???
     render(newsArray);
+    renderFilterSection();
     indexOfStories += 20;
 }
 let render = (array) => {
-
-
     let htmlForNews = array.map( (item) => {
         //"2020-02-21T16:58:01Z"
         //also handle time
@@ -42,12 +42,8 @@ let render = (array) => {
         let duration = Math.floor(moment.duration(now.diff(publishedAtDate)).asDays()) + ' days ago';
         //h2 length limit 35 chars
         //text content length limit 167
+        
 
-        if(!newsSources.hasOwnProperty(item.source.name)) {
-            newsSources[item.source.name] = 1;
-        } else {
-            newsSources[item.source.name] += 1;
-        }
         return `<div id="news" class="d-flex shadow-sm my-2 rounded-lg border" style="height:250px;">
         <img style="width:300px" class="rounded-left"src="${item.urlToImage}"/>
         <div class="p-3 w-100">
@@ -62,23 +58,59 @@ let render = (array) => {
         </div>
     </div>`
     });
-    //method like Map() but for every property in an object
-    let array2 = [];
-    Object.keys(newsSources).forEach(key => {
-        array2.push(`<div class="d-flex align-items-center">
-                        <input type="checkbox" value="value1"/>
-                        <label style="margin:0;">(${newsSources[key]}) ${key}</label>
-                    </div>`
-        );
-    });
-    console.log(array2);
-
-    document.getElementById('newsArea').innerHTML += htmlForNews.slice(indexOfStories,indexOfStories+20).join('');
+   
+    let displayNum = 0;
+    displayMoreBool === false ? displayNum=20 : displayNum=40;
+    document.getElementById('newsArea').innerHTML = htmlForNews.slice(0,displayNum).join('');
     document.getElementById('storiesNum').innerHTML =  `Number of Stories: ${newsArray.length}`;
-    document.getElementById('newsSiteFilter').innerHTML = `${array2.join('')}`;
+}
+let renderFilterSection = () => {
+        newsArray.map( item => {
+        //recording the news Sources in an object as properties. Dictionary style with key,values for quantity
+            if(!newsSources.hasOwnProperty(item.source.name)) {
+                newsSources[item.source.name] = 1;
+            } else {
+                newsSources[item.source.name] += 1;
+            }
+        });
+
+     //method like Map() but for every property in an object
+     let array2 = [];
+     Object.keys(newsSources).forEach(key => {
+         array2.push(`<div class="d-flex align-items-center">
+                         <input type="checkbox" value="${key}" id="${key}-filter" onClick="filterNewsSite(this.id)"/>
+                         <label style="margin:0;">${key} (${newsSources[key]})</label>
+                     </div>`
+         );
+     });
+    //  console.log(array2);
+     document.getElementById('newsSiteFilter').innerHTML = `${array2.join('')}`;
+}
+
+//input here is the id of the input/checkbox element that was clicked
+let filterNewsSite = (inputId) => {
+    let inputRef = document.getElementById(inputId);
+    //  console.log(inputRef.value);
+    // console.log(inputRef.checked === true);
+    let original = inputRef.checked;
+    $('input[type="checkbox"]:checked').prop('checked',false);
+    inputRef.checked = original;
+    //use render show only 
+    if(inputRef.checked === false) {
+        console.log('match');
+        render(newsArray);
+    } else {
+        console.log("no match");
+        let filterArray = newsArray.filter(item => {
+            if(item.source.name === inputRef.value)
+                return true;
+        });
+        render(filterArray);
+    }
 }
 
 let displayMoreStories = () => {
+    displayMoreBool = true;
     render(newsArray);
     document.getElementById('seeMoreButton').hidden = true;
 }
