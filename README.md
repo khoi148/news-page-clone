@@ -1,8 +1,8 @@
-# CoderSchool FTW - * Name of Your Project Here *
+# CoderSchool FTW - * News Page Clone *
 
 Created with love by: `Khoi Phan`
   
-View online at: ``
+View online at: `https://news-site-clone-coderschool.netlify.com`
   
 Clone of the google news page. 
 
